@@ -593,7 +593,7 @@ def check_format():
 
 def pbcompile(compiler, source, objectfile):
     if compiler == 'cl':
-        cmd = [compiler, '/nologo', '/Fo' + objectfile, '/c', source]
+        cmd = [compiler, '-nologo', '-Fo' + objectfile, '-c', source]
     else:
         cmd = [compiler, '-c', source, '-o', objectfile]
     subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -610,7 +610,7 @@ def generate_pb_static(compiler, object_suffix, static_suffix):
     stlibfile = 'test cases/prebuilt/2 static/libdir/libbest.' + static_suffix
     pbcompile(compiler, source, objectfile)
     if compiler == 'cl':
-        linker = ['lib', '/NOLOGO', '/OUT:' + stlibfile, objectfile]
+        linker = ['lib', '-NOLOGO', '-OUT:' + stlibfile, objectfile]
     else:
         linker = ['ar', 'csr', stlibfile, objectfile]
     subprocess.check_call(linker)

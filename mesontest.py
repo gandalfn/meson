@@ -267,7 +267,7 @@ class TestHarness:
                 # killing a process and all its children so we need
                 # to roll our own.
                 if is_windows():
-                    subprocess.call(['taskkill', '/F', '/T', '/PID', str(p.pid)])
+                    subprocess.call(['taskkill', '-F', '-T', '-PID', str(p.pid)])
                 else:
                     os.killpg(os.getpgid(p.pid), signal.SIGKILL)
                 (stdo, stde) = p.communicate()

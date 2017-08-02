@@ -503,7 +503,7 @@ class Environment:
             if isinstance(compiler, str):
                 compiler = [compiler]
             if 'cl' in compiler or 'cl.exe' in compiler:
-                arg = '/?'
+                arg = '-?'
             else:
                 arg = '--version'
             try:
@@ -772,7 +772,7 @@ class Environment:
         popen_exceptions = {}
         for linker in linkers:
             if 'lib' in linker or 'lib.exe' in linker:
-                arg = '/?'
+                arg = '-?'
             else:
                 arg = '--version'
             try:
@@ -780,7 +780,7 @@ class Environment:
             except OSError as e:
                 popen_exceptions[' '.join(linker + [arg])] = e
                 continue
-            if '/OUT:' in out or '/OUT:' in err:
+            if 'Microsoft' in out or 'Microsoft' in err:
                 return VisualStudioLinker(linker)
             if p.returncode == 0:
                 return ArLinker(linker)

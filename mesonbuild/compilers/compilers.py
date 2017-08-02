@@ -113,10 +113,10 @@ gnulike_buildtype_args = {'plain': [],
                           'minsize': ['-Os', '-g']}
 
 msvc_buildtype_args = {'plain': [],
-                       'debug': ["/MDd", "/ZI", "/Ob0", "/Od", "/RTC1"],
-                       'debugoptimized': ["/MD", "/Zi", "/O2", "/Ob1"],
-                       'release': ["/MD", "/O2", "/Ob2"],
-                       'minsize': ["/MD", "/Zi", "/Os", "/Ob1"],
+                       'debug': ["-MDd", "-ZI", "-Ob0", "-Od", "-RTC1"],
+                       'debugoptimized': ["-MD", "-Zi", "-O2", "-Ob1"],
+                       'release': ["-MD", "-O2", "-Ob2"],
+                       'minsize': ["-MD", "-Zi", "-Os", "-Ob1"],
                        }
 
 apple_buildtype_linker_args = {'plain': [],
@@ -137,7 +137,7 @@ msvc_buildtype_linker_args = {'plain': [],
                               'debug': [],
                               'debugoptimized': [],
                               'release': [],
-                              'minsize': ['/INCREMENTAL:NO'],
+                              'minsize': ['-INCREMENTAL:NO'],
                               }
 
 java_buildtype_args = {'plain': [],
@@ -243,27 +243,27 @@ gnulike_instruction_set_args = {'mmx': ['-mmmx'],
                                 'neon': ['-mfpu=neon'],
                                 }
 
-vs32_instruction_set_args = {'mmx': ['/arch:SSE'], # There does not seem to be a flag just for MMX
-                             'sse': ['/arch:SSE'],
-                             'sse2': ['/arch:SSE2'],
-                             'sse3': ['/arch:AVX'], # VS leaped from SSE2 directly to AVX.
-                             'sse41': ['/arch:AVX'],
-                             'sse42': ['/arch:AVX'],
-                             'avx': ['/arch:AVX'],
-                             'avx2': ['/arch:AVX2'],
+vs32_instruction_set_args = {'mmx': ['-arch:SSE'], # There does not seem to be a flag just for MMX
+                             'sse': ['-arch:SSE'],
+                             'sse2': ['-arch:SSE2'],
+                             'sse3': ['-arch:AVX'], # VS leaped from SSE2 directly to AVX.
+                             'sse41': ['-arch:AVX'],
+                             'sse42': ['-arch:AVX'],
+                             'avx': ['-arch:AVX'],
+                             'avx2': ['-arch:AVX2'],
                              'neon': None,
 }
 
-# The 64 bit compiler defaults to /arch:avx.
-vs64_instruction_set_args = {'mmx': ['/arch:AVX'],
-                             'sse': ['/arch:AVX'],
-                             'sse2': ['/arch:AVX'],
-                             'sse3': ['/arch:AVX'],
-                             'ssse3': ['/arch:AVX'],
-                             'sse41': ['/arch:AVX'],
-                             'sse42': ['/arch:AVX'],
-                             'avx': ['/arch:AVX'],
-                             'avx2': ['/arch:AVX2'],
+# The 64 bit compiler defaults to -arch:avx.
+vs64_instruction_set_args = {'mmx': ['-arch:AVX'],
+                             'sse': ['-arch:AVX'],
+                             'sse2': ['-arch:AVX'],
+                             'sse3': ['-arch:AVX'],
+                             'ssse3': ['-arch:AVX'],
+                             'sse41': ['-arch:AVX'],
+                             'sse42': ['-arch:AVX'],
+                             'avx': ['-arch:AVX'],
+                             'avx2': ['-arch:AVX2'],
                              'neon': None,
                              }
 

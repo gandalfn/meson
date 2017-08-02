@@ -193,7 +193,7 @@ class VisualStudioCPPCompiler(VisualStudioCCompiler, CPPCompiler):
         args = []
         std = options['cpp_eh']
         if std.value != 'none':
-            args.append('/EH' + std.value)
+            args.append('-EH' + std.value)
         return args
 
     def get_option_link_args(self, options):

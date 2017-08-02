@@ -809,8 +809,8 @@ class IntelCCompiler(IntelCompiler, CCompiler):
 
 
 class VisualStudioCCompiler(CCompiler):
-    std_warn_args = ['/W3']
-    std_opt_args = ['/O2']
+    std_warn_args = ['-W3']
+    std_opt_args = ['-O2']
     ignore_libs = ('m', 'c', 'pthread')
 
     def __init__(self, exelist, version, is_cross, exe_wrap, is_64):
@@ -818,10 +818,10 @@ class VisualStudioCCompiler(CCompiler):
         self.id = 'msvc'
         # /showIncludes is needed for build dependency tracking in Ninja
         # See: https://ninja-build.org/manual.html#_deps
-        self.always_args = ['/nologo', '/showIncludes']
-        self.warn_args = {'1': ['/W2'],
-                          '2': ['/W3'],
-                          '3': ['/W4']}
+        self.always_args = ['-nologo', '-showIncludes']
+        self.warn_args = {'1': ['-W2'],
+                          '2': ['-W3'],
+                          '3': ['-W4']}
         self.base_options = ['b_pch'] # FIXME add lto, pgo and the like
         self.is_64 = is_64
 
@@ -838,7 +838,7 @@ class VisualStudioCCompiler(CCompiler):
         MSVC won't auto-select a CRT for us in that case and will error out
         asking us to select one.
         """
-        return ['/MDd']
+        return ['-MDd']
 
     def get_buildtype_args(self, buildtype):
         return msvc_buildtype_args[buildtype]
@@ -858,21 +858,21 @@ class VisualStudioCCompiler(CCompiler):
     def get_pch_use_args(self, pch_dir, header):
         base = os.path.split(header)[-1]
         pchname = self.get_pch_name(header)
-        return ['/FI' + base, '/Yu' + base, '/Fp' + os.path.join(pch_dir, pchname)]
+        return ['-FI' + base, '-Yu' + base, '-Fp:' + os.path.join(pch_dir, pchname)]
 
     def get_preprocess_only_args(self):
-        return ['/EP']
+        return ['-EP']
 
     def get_compile_only_args(self):
-        return ['/c']
+        return ['-c']
 
     def get_no_optimization_args(self):
-        return ['/Od']
+        return ['-Od']
 
     def get_output_args(self, target):
         if target.endswith('.exe'):
-            return ['/Fe' + target]
-        return ['/Fo' + target]
+            return ['-Fe:' + target]
+        return ['-Fo:' + target]
 
     def get_dependency_gen_args(self, outtarget, outfile):
         return []
@@ -881,34 +881,34 @@ class VisualStudioCCompiler(CCompiler):
         return ['link'] # FIXME, should have same path as compiler.
 
     def get_linker_always_args(self):
-        return ['/nologo']
+        return ['-nologo']
 
     def get_linker_output_args(self, outputname):
-        return ['/OUT:' + outputname]
+        return ['-OUT:' + outputname]
 
     def get_linker_search_args(self, dirname):
-        return ['/LIBPATH:' + dirname]
+        return ['-LIBPATH:' + dirname]
 
     def get_pic_args(self):
         return [] # PIC is handled by the loader on Windows
 
     def get_std_shared_lib_link_args(self):
-        return ['/DLL']
+        return ['-DLL']
 
     def gen_vs_module_defs_args(self, defsfile):
         if not isinstance(defsfile, str):
             raise RuntimeError('Module definitions file should be str')
         # With MSVC, DLLs only export symbols that are explicitly exported,
         # so if a module defs file is specified, we use that to export symbols
-        return ['/DEF:' + defsfile]
+        return ['-DEF:' + defsfile]
 
     def gen_pch_args(self, header, source, pchname):
         objname = os.path.splitext(pchname)[0] + '.obj'
-        return objname, ['/Yc' + header, '/Fp' + pchname, '/Fo' + objname]
+        return objname, ['-Yc' + header, '-Fp' + pchname, '-Fo' + objname]
 
     def gen_import_library_args(self, implibname):
         "The name of the outputted import library"
-        return ['/IMPLIB:' + implibname]
+        return ['-IMPLIB:' + implibname]
 
     def build_rpath_args(self, build_dir, from_dir, rpath_paths, build_rpath, install_rpath):
         return []
@@ -938,7 +938,7 @@ class VisualStudioCCompiler(CCompiler):
             if i in ('-mms-bitfields', '-pthread'):
                 continue
             if i.startswith('-L'):
-                i = '/LIBPATH:' + i[2:]
+                i = '-LIBPATH:' + i[2:]
             # Translate GNU-style -lfoo library name to the import library
             elif i.startswith('-l'):
                 name = i[2:]
@@ -955,7 +955,7 @@ class VisualStudioCCompiler(CCompiler):
         return result
 
     def get_werror_args(self):
-        return ['/WX']
+        return ['-WX']
 
     def get_include_args(self, path, is_system):
         if path == '':
@@ -988,7 +988,7 @@ class VisualStudioCCompiler(CCompiler):
     def get_compile_debugfile_args(self, rel_obj, pch=False):
         pdbarr = rel_obj.split('.')[:-1]
         pdbarr += ['pdb']
-        args = ['/Fd' + '.'.join(pdbarr)]
+        args = ['-Fd' + '.'.join(pdbarr)]
         # When generating a PDB file with PCH, all compile commands write
         # to the same PDB file. Hence, we need to serialize the PDB
         # writes using /FS since we do parallel builds. This slows down the
@@ -996,19 +996,19 @@ class VisualStudioCCompiler(CCompiler):
         # This was added in Visual Studio 2013 (MSVC 18.0). Before that it was
         # always on: https://msdn.microsoft.com/en-us/library/dn502518.aspx
         if pch and version_compare(self.version, '>=18.0'):
-            args = ['/FS'] + args
+            args = ['-FS'] + args
         return args
 
     def get_link_debugfile_args(self, targetfile):
         pdbarr = targetfile.split('.')[:-1]
         pdbarr += ['pdb']
-        return ['/DEBUG', '/PDB:' + '.'.join(pdbarr)]
+        return ['-DEBUG', '-PDB:' + '.'.join(pdbarr)]
 
     def get_link_whole_for(self, args):
         # Only since VS2015
         if not isinstance(args, list):
             args = [args]
-        return ['/WHOLEARCHIVE:' + x for x in args]
+        return ['-WHOLEARCHIVE:' + x for x in args]
 
     def get_instruction_set_args(self, instruction_set):
         if self.is_64:

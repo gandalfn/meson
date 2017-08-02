@@ -45,7 +45,7 @@ class WindowsModule(ExtensionModule):
 
         if comp.id == 'msvc':
             rescomp = dependencies.ExternalProgram('rc', silent=True)
-            res_args = extra_args + ['/nologo', '/fo@OUTPUT@', '@INPUT@']
+            res_args = extra_args + ['-nologo', '-fo@OUTPUT@', '@INPUT@']
             suffix = 'res'
         else:
             m = 'Argument {!r} has a space which may not work with windres due to ' \
