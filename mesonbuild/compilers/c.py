@@ -818,7 +818,7 @@ class VisualStudioCCompiler(CCompiler):
         self.id = 'msvc'
         # /showIncludes is needed for build dependency tracking in Ninja
         # See: https://ninja-build.org/manual.html#_deps
-        self.always_args = ['-nologo', '-showIncludes']
+        self.always_args = ['-nologo']
         self.warn_args = {'1': ['-W2'],
                           '2': ['-W3'],
                           '3': ['-W4']}
