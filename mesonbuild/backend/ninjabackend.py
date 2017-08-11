@@ -1760,7 +1760,13 @@ rule FORTRAN_DEP_HACK
                 outfilelist = outfilelist[len(generator.outputs):]
             relout = self.get_target_private_dir(target)
             args = self.replace_paths(target, args)
-            cmdlist = exe_arr + self.replace_extra_args(args, genlist)
+            cmdlist = []
+            if self.environment.is_cross_build() and \
+               self.environment.cross_info.need_exe_wrapper():
+                exe_wrap = self.environment.cross_info.config['binaries'].get('exe_wrapper', None)
+                if exe_wrap is not None:
+                    cmdlist = [exe_wrap]
+            cmdlist += exe_arr + self.replace_extra_args(args, genlist)
             elem = NinjaBuildElement(self.all_outputs, outfiles, rulename, infilename)
             if generator.depfile is not None:
                 elem.add_item('DEPFILE', depfile)
